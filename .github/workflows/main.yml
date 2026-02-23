@@ -1,18 +1,20 @@
-name: Minecraft Bot
+const mineflayer = require('mineflayer')
 
-on:
-  push:
-    branches: [ main ]
-  schedule:
-    - cron: '*/15 * * * *'
+const bot = mineflayer.createBot({
+  host: 'اسم_سيرفرك.aternos.me', // اكتب هنا الـ IP بتاعك من أترنوس
+  port: 12345,                  // اكتب هنا البورت (الـ 5 أرقام)
+  username: 'Gemini_Bot',       // اسم البوت
+  version: false,               
+  connectTimeout: 30000,        // مهم جداً لأترنوس
+  keepAlive: true               // عشان يفضل صاحي 24 ساعة
+})
 
-jobs:
-  run-bot:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - run: npm install
-      - run: node index.js
+// أهم جزء: أول ما يدخل يبعت رسالة عشان السيرفر ما يطردوش
+bot.on('spawn', () => {
+  console.log('✅ الحل السحري اشتغل! البوت الآن داخل أترنوس')
+  bot.chat('I am online! Created by Gemini')
+})
+
+// لو حصل أي طرد أو خطأ يطبع لك السبب فوراً
+bot.on('error', (err) => console.log('❌ خطأ: ' + err))
+bot.on('kicked', (reason) => console.log('❌ طرد: ' + reason))
