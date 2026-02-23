@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "mineflayer": "^4.20.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
