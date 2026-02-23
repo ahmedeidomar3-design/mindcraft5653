@@ -14,11 +14,10 @@ let bot;
 function createBot() {
   bot = mineflayer.createBot(botArgs)
 
-  // --- ميزة النط ومنع الطرد (Anti-AFK) ---
   bot.on('spawn', () => {
     console.log('✅ البوت دخل السيرفر بنجاح!')
-    bot.chat('أنا جيت! شغال 24 ساعة ونط ونوم بالليل.')
     
+    // ميزة النط المستمر لمنع الطرد AFK
     setInterval(() => {
       bot.setControlState('jump', true)
       setTimeout(() => bot.setControlState('jump', false), 500)
@@ -29,24 +28,16 @@ function createBot() {
     }, 15000)
   })
 
-  // --- ميزة النوم التلقائي بالليل ---
+  // ميزة النوم التلقائي فور حلول الليل
   bot.on('time', () => {
     if (bot.time.isDay) return
     const bed = bot.findBlock({ matching: block => bot.isABed(block), maxDistance: 5 })
     if (bed) {
-      bot.sleep(bed).catch(err => console.log('😴 مشكلة في النوم: ' + err.message))
+      bot.sleep(bed).catch(err => console.log('😴 محاولة نوم: ' + err.message))
     }
   })
 
-  // --- ميزة الرد التلقائي في الشات ---
-  bot.on('chat', (username, message) => {
-    if (username === bot.username) return
-    if (message.includes('hello') || message.includes('هلا')) {
-      bot.chat(`أهلاً يا ${username}! أنا بوت جيميناي المطوّر.`)
-    }
-  })
-
-  // --- إعادة الاتصال التلقائي (مهمة جداً) ---
+  // إعادة الاتصال التلقائي لو السيرفر قفل أو رستر
   bot.on('error', (err) => console.log('❌ خطأ: ' + err.message))
   bot.on('end', () => {
     console.log('🔄 السيرفر فصل.. جاري إعادة المحاولة خلال 30 ثانية...')
